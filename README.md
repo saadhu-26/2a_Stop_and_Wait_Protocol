@@ -14,31 +14,49 @@ To write a python program to perform stop and wait protocol
 6. Stop the Program
 
 ## PROGRAM
+## Server
 ```
-client side:
-  i=input("Enter a data: ") 
-  c.send(i.encode()) 
-  ack=c.recv(1024).decode() 
-  if ack: 
-    print(ack) 
-    continue 
-  else: 
-    c.close() 
-    break
-
-server side:
-import socket 
-s=socket.socket() 
-s.connect(('localhost',8000)) 
-while True: 
-  print(s.recv(1024).decode()) 
-  s.send("Acknowledgement Recived".encode())
+import socket
+s = socket.socket()
+s.bind(('localhost', 8000))
+s.listen(5)
+print("Server waiting for client...")
+c, addr = s.accept()
+while True:
+    i = input("Enter a data: ")
+    if i.lower() == "exit":
+        break
+    c.send(i.encode())
+    ack = c.recv(1024).decode()
+    if ack:
+        print("Acknowledgement:", ack)
+    else:
+        break
+c.close()
+s.close()
+```
+## Client
+```
+import socket
+s = socket.socket()
+s.connect(('localhost', 8000))
+while True:
+    data = s.recv(1024).decode()
+    if not data:
+        break
+    if data.lower() == "exit":
+        print("Server disconnected")
+        break
+    print("Received data:", data)
+    ack = "ACK: Data received"
+    s.send(ack.encode())
+s.close()
 ```
 ## OUTPUT
 
-<img width="658" height="264" alt="image" src="https://github.com/user-attachments/assets/a2a3b9f4-4277-4dac-a2dd-f111dc1af271" />
+<img width="673" height="208" alt="image" src="https://github.com/user-attachments/assets/0df388f3-e1c9-4849-a808-e212d8fd2cac" />
 
-<img width="631" height="174" alt="image" src="https://github.com/user-attachments/assets/52c160b8-6db4-4dca-9084-9903f093c4cb" />
+<img width="756" height="206" alt="image" src="https://github.com/user-attachments/assets/5e066439-8684-4e3a-95de-a82d5f6f8b92" />
 
 ## RESULT
 
